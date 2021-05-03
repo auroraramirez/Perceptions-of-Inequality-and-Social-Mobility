@@ -181,9 +181,9 @@ graph bar ms, over(tipo2, relabel(1 `" "% that are poor" "' 2 `" "% that are ric
 	blabel(bar, size(medsmall) format(%9.1g)) ytitle("% People", size(medium)) ////
 	ylabel(0(10)80, grid glwidth(medthin) glpattern(dash)) ////
 	text(75 24 "Avg. Maximum income to be", place(c) size(medsmall)) ////
-	text(71 24 "considered poor $`coef1' pesos ", place(c) size(medsmall)) ////
+	text(71 24 "considered poor MXN $`coef1'", place(c) size(medsmall)) ////
 	text(55 78 "Avg. Minimum income to be", place(c) size(medsmall)) ////
-	text(51 78 "considered rich $`coef2' pesos ", place(c) size(medsmall)) ////
+	text(51 78 "considered rich MXN $`coef2'", place(c) size(medsmall)) ////
 	legend(off) graphregion(fcolor(white))
 graph export "$graph\Fig1_Perceptions.emf", replace font("Times New Roman")
 
