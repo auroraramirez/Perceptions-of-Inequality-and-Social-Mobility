@@ -1,0 +1,12 @@
+	(1)	(2)
+VARIABLES	mean	sd
+		
+diff_gini	0.247	0.333
+diff_q1q1	29.26	34.58
+diff_q1q5	-34.30	36.89
+diff_q3q1	12.21	29.11
+diff_q3q5	-25.99	34.13
+diff_q5q1	4.248	29.61
+diff_q5q5	-10.29	37.08
+diff_tax	17.01	24.18
+		

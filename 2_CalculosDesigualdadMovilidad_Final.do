@@ -12,17 +12,9 @@ grstyle set plain, horizontal grid
 
 
 global drive="C:"
-global data="$drive\Users\Aurora Ramírez\OneDrive - El Colegio de México A.C\Proyectos\AFD\Paper_2\WD\1st_round_revised\code"
-global graph="$drive\Users\Aurora Ramírez\OneDrive - El Colegio de México A.C\Proyectos\AFD\Paper_2\WD\1st_round_revised\code"
-global tablas="$drive\Users\Aurora Ramírez\OneDrive - El Colegio de México A.C\Proyectos\AFD\Paper_2\WD\1st_round_revised\code"
-
-/*
-* Globals Y
-global drive="D:"
-global data="$drive\desigualdadPercepciones\datos"
-global graph="$drive\desigualdadPercepciones\graphs"
-global tablas="$drive\desigualdadPercepciones\tablas"
-*/
+global data="$drive\Users\Aurora Ramírez\OneDrive - El Colegio de México A.C\Proyectos\AFD\Paper_2\WD\code"
+global graph="$drive\Users\Aurora Ramírez\OneDrive - El Colegio de México A.C\Proyectos\AFD\Paper_2\WD\code"
+global tablas="$drive\Users\Aurora Ramírez\OneDrive - El Colegio de México A.C\Proyectos\AFD\Paper_2\WD\code"
 
 ********************************************************************************
 ************************                                           1/2 Main text
@@ -212,7 +204,7 @@ twoway (scatter p14 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	, ////
 	ytitle("Max. Income to be considered poor") ////
 	ytitle(, size(medium)) ylabel(1000(500)4000, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank", size(medium)) ////
+	xtitle("SES rank", size(medium)) ////
 	xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(1500 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	legend(off) graphregion(fcolor(white))
@@ -229,7 +221,7 @@ twoway (scatter p16 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	, ////
 	ytitle("Min. Income to be considered rich") ////
 	ytitle(, size(medium)) ylabel(25000(5000)50000, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(35000 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	legend(off) graphregion(fcolor(white))
@@ -246,7 +238,7 @@ twoway (scatter p15 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	, ////
 	ytitle("% Perceived to be poor") ////
 	ytitle(, size(medium)) ylabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(40 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	legend(off) graphregion(fcolor(white))
@@ -262,7 +254,7 @@ twoway (scatter p17 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	, ////
 	ytitle("% Perceived to be rich") ////
 	ytitle(, size(medium)) ylabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(50 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	legend(off) graphregion(fcolor(white))
@@ -438,65 +430,9 @@ graph export "$graph\Fig5_T1T2.emf", replace font("Times New Roman")
 
 
 
+
 ********************************************************************************
 ************************                                                Figure 6
-********************************************************************************
-
-
-use "$data\Desigualdad_temp.dta", clear
-pca yrs_educ seguro hh_index padres_ind padres_educbaja ageb_graproes [aw=weight]	//localidad//
-predict wealth
-xtile pca_wealth=wealth [aw=weight], nq(20)
-foreach var in p34a p34b p35a p35b p36a p36b p37 p38 p39 p40 {
-replace `var'=`var'*10
-}
-
- 
-gen diff_gini=p21_gini-p33_gini
-gen diff_q1q1=p27a-p34a
-gen diff_q1q5=p27b-p34b
-gen diff_q3q1=p29a-p36a
-gen diff_q3q5=p29b-p36b
-gen diff_q5q1=p28a-p35a
-gen diff_q5q5=p28b-p35b
-gen diff_tax=p19-p37
-
-foreach var in edad index_beliefspoverty index_colectivism wealth ////
-		diff_gini diff_q1q1 diff_q1q5 diff_q3q1 diff_q3q5 diff_q5q1 diff_q5q5 diff_tax {
-quietly sum `var' [aw=weight]
-quietly gen std_`var'=(`var'-r(mean))/r(sd)	
-}
-
-
-quietly eststo A_p33_gini: reg std_diff_gini T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_* [aw=weight], robust
-**Q1-Q1
-quietly eststo A_p34a: reg std_diff_q1q1 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-**Q1-Q5
-quietly eststo A_p34b: reg std_diff_q1q5 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-**Q3-Q1
-quietly eststo A_p36a: reg std_diff_q3q1 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-**Q3-Q5
-quietly eststo A_p36b: reg std_diff_q3q5 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-**Q5-Q1
-quietly eststo A_p35a: reg std_diff_q5q1 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-**Q5-Q5
-quietly eststo A_p35b: reg std_diff_q5q5 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-**Taxes
-quietly eststo A_p37: reg std_diff_tax T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
-
-
-coefplot (A_p33_gini, keep(T1) \ A_p34a, keep(T1) \ A_p35b, keep(T1)  \ A_p34b, keep(T1) \ A_p36b, keep(T1) \ A_p35a, keep(T1) \ A_p36a, keep(T1) \ A_p37, keep(T1)) || ////
-		(A_p33_gini, keep(T2) \ A_p34a, keep(T2) \ A_p35b, keep(T2)  \ A_p34b, keep(T2) \ A_p36b, keep(T2) \ A_p35a, keep(T2) \ A_p36a, keep(T2) \ A_p37, keep(T2)) || ////
-		(A_p33_gini, keep(std_wealth) \ A_p34a, keep(std_wealth) \ A_p35b, keep(std_wealth)  \ A_p34b, keep(std_wealth) \ A_p36b, keep(std_wealth) \ A_p35a, keep(std_wealth) \ A_p36a, keep(std_wealth) \ A_p37, keep(std_wealth)) || ////
-		, xline(0) aseq swapnames ////
-			coeflabels(A_p33_gini = "Gini" A_p34a = "Q1-Q1" A_p34b = "Q1-Q5" A_p36a = "Q3-Q1" A_p36b = "Q3-Q5" A_p35a = "Q5-Q1" A_p35b="Q5-Q5" A_p37="Taxes") ////
-			graphregion(fcolor(white))  ci(95)  bylabels("Treatment 1: Inequality" "Treatment 2: Social Mobility" "Standardized Wealth")  ////
-			xlabel(-0.30(0.10)0.30, grid glwidth(medthin) glpattern(dash)) ylabel(, nogrid)
-graph export "$graph\Fig6_Reg3_Difference.emf", replace font("Times New Roman")
-
-
-********************************************************************************
-************************                                                Figure 7
 ********************************************************************************
 use "$data\Desigualdad_temp.dta", clear
 pca yrs_educ seguro hh_index padres_ind padres_educbaja ageb_graproes [aw=weight]	//localidad//
@@ -518,22 +454,22 @@ local coef2 : di %6.3f _b[pca_wealth]
 local pval2 : di %6.3f  (2 * ttail(e(df_r), abs(_b[pca_wealth]/_se[pca_wealth])))
 
 
-** Figure 7A
+** Figure 6A
 twoway (scatter p19 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(scatter p37 pca_wealth, sort msize(medsmall) msymbol(square)) ////
 	(lfit p19 pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(navy)) ////
 	(lfit p37 pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("% Taxes") ////
 	ytitle(, size(medium)) ylabel(0(20)70, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(60 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(10 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
 	legend(order(1 "Perceived" 2 "Desired")) graphregion(fcolor(white))
-graph export "$graph\Fig7A_Own_Wealth.emf", replace font("Times New Roman")
+graph export "$graph\Fig6A_Own_Wealth.emf", replace font("Times New Roman")
 
 
-** Figure 7B: Other taxes
+** Figure 6B: Other taxes
 sum p39 [aw=weight]
 quietly reg p39 pca_wealth [aw=weight], rob
 local coef : di %6.3f _b[pca_wealth]
@@ -555,35 +491,15 @@ twoway (scatter p39 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p38 pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(gray)), ////
 	ytitle("% Taxes") ////
 	ytitle(, size(medium)) ylabel(0(20)70, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(10 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(28 65 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
 	text(55 75 "Coefficient `coef3' [`pval3']", place(c) size(medium)) ////
 	legend(order(1 "Poor" 2 "Median Income" 3 "Rich") rows(1)) graphregion(fcolor(white))
-graph export "$graph\Fig7B_Other_Wealth.emf", replace font("Times New Roman")
+graph export "$graph\Fig6B_Other_Wealth.emf", replace font("Times New Roman")
 
 
-
-********************************************************************************
-************************                                                Figure 8
-********************************************************************************
-replace p20=100*p20/10000
-sum p20 [aw=weight]
-quietly reg p20 pca_wealth [aw=weight], rob
-local coef : di %6.3f _b[pca_wealth]
-local pval : di %6.3f  (2 * ttail(e(df_r), abs(_b[pca_wealth]/_se[pca_wealth])))
-
-twoway (scatter p20 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
-	(lfit p20 pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(navy)) ////
-	, ////
-	ytitle("% from own $ to eliminate poverty/inequality") ////
-	ytitle(, size(medium)) ylabel(0(5)25, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
-	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
-	text(5 80 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
-	legend(off) graphregion(fcolor(white))
-graph export "$graph\Fig8_Willingtogiveup.emf", replace font("Times New Roman")
 
 
 
@@ -914,7 +830,7 @@ twoway (scatter p21_gini pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p33_gini pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Gini coefficient") ////
 	ytitle(, size(small)) ylabel(0(0.2)1, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(0.7 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(0.18 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -940,7 +856,7 @@ twoway (scatter p27a pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p34a pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Persistence Q1-Q1") ////
 	ytitle(, size(small)) ylabel(0(20)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(70 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(12 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -961,7 +877,7 @@ twoway (scatter p28b pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p35b pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Persistence Q5-Q5") ////
 	ytitle(, size(small)) ylabel(0(20)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(30 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(90 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -983,7 +899,7 @@ twoway (scatter p27b pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p34b pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Upward mobility Q1-Q5") ////
 	ytitle(, size(small)) ylabel(0(20)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(30 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(90 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -1005,7 +921,7 @@ twoway (scatter p28a pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p35a pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Downward mobility Q5-Q1") ////
 	ytitle(, size(small)) ylabel(0(20)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(40 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(10 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -1028,7 +944,7 @@ twoway (scatter p29a pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p36a pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Downward mobility Q3-Q1") ////
 	ytitle(, size(small)) ylabel(0(20)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(50 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(10 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -1050,7 +966,7 @@ twoway (scatter p29b pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 	(lfit p36b pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(maroon)), ////
 	ytitle("Upward mobility Q3-Q5") ////
 	ytitle(, size(small)) ylabel(0(20)100, grid glwidth(medthin) glpattern(dash)) ////
-	xtitle("Wealth rank") ////
+	xtitle("SES rank") ////
 	xtitle(, size(small)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
 	text(30 75 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
 	text(90 75 "Coefficient `coef2' [`pval2']", place(c) size(medium)) ////
@@ -1058,6 +974,162 @@ twoway (scatter p29b pca_wealth, sort msize(medsmall) msymbol(circle)) ////
 graph export "$graph\FigA8f_Q3Q5_Wealth.emf", replace font("Times New Roman")
 
 
+
+********************************************************************************
+************************                                                Figure A9
+********************************************************************************
+
+
+use "$data\Desigualdad_temp.dta", clear
+pca yrs_educ seguro hh_index padres_ind padres_educbaja ageb_graproes [aw=weight]	//localidad//
+predict wealth
+xtile pca_wealth=wealth [aw=weight], nq(20)
+foreach var in p34a p34b p35a p35b p36a p36b p37 p38 p39 p40 {
+replace `var'=`var'*10
+}
+
+ 
+gen diff_gini=p21_gini-p33_gini
+gen diff_q1q1=p27a-p34a
+gen diff_q1q5=p27b-p34b
+gen diff_q3q1=p29a-p36a
+gen diff_q3q5=p29b-p36b
+gen diff_q5q1=p28a-p35a
+gen diff_q5q5=p28b-p35b
+gen diff_tax=p19-p37
+
+foreach var in edad index_beliefspoverty index_colectivism wealth ////
+		diff_gini diff_q1q1 diff_q1q5 diff_q3q1 diff_q3q5 diff_q5q1 diff_q5q5 diff_tax {
+quietly sum `var' [aw=weight]
+quietly gen std_`var'=(`var'-r(mean))/r(sd)	
+}
+
+
+quietly eststo A_p33_gini: reg std_diff_gini T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_* [aw=weight], robust
+**Q1-Q1
+quietly eststo A_p34a: reg std_diff_q1q1 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+**Q1-Q5
+quietly eststo A_p34b: reg std_diff_q1q5 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+**Q3-Q1
+quietly eststo A_p36a: reg std_diff_q3q1 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+**Q3-Q5
+quietly eststo A_p36b: reg std_diff_q3q5 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+**Q5-Q1
+quietly eststo A_p35a: reg std_diff_q5q1 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+**Q5-Q5
+quietly eststo A_p35b: reg std_diff_q5q5 T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+**Taxes
+quietly eststo A_p37: reg std_diff_tax T1 T2 std_wealth female std_edad cd_mxcity cd_norte cd_centro married work std_index_*  [aw=weight], robust
+
+
+coefplot (A_p33_gini, keep(T1) \ A_p34a, keep(T1) \ A_p35b, keep(T1)  \ A_p34b, keep(T1) \ A_p36b, keep(T1) \ A_p35a, keep(T1) \ A_p36a, keep(T1) \ A_p37, keep(T1)) || ////
+		(A_p33_gini, keep(T2) \ A_p34a, keep(T2) \ A_p35b, keep(T2)  \ A_p34b, keep(T2) \ A_p36b, keep(T2) \ A_p35a, keep(T2) \ A_p36a, keep(T2) \ A_p37, keep(T2)) || ////
+		(A_p33_gini, keep(std_wealth) \ A_p34a, keep(std_wealth) \ A_p35b, keep(std_wealth)  \ A_p34b, keep(std_wealth) \ A_p36b, keep(std_wealth) \ A_p35a, keep(std_wealth) \ A_p36a, keep(std_wealth) \ A_p37, keep(std_wealth)) || ////
+		, xline(0) aseq swapnames ////
+			coeflabels(A_p33_gini = "Gini" A_p34a = "Q1-Q1" A_p34b = "Q1-Q5" A_p36a = "Q3-Q1" A_p36b = "Q3-Q5" A_p35a = "Q5-Q1" A_p35b="Q5-Q5" A_p37="Taxes") ////
+			graphregion(fcolor(white))  ci(95)  bylabels("Treatment 1: Inequality" "Treatment 2: Social Mobility" "Standardized Wealth")  ////
+			xlabel(-0.30(0.10)0.30, grid glwidth(medthin) glpattern(dash)) ylabel(, nogrid)
+graph export "$graph\FigA9_Reg3_Difference.emf", replace font("Times New Roman")
+
+
+
+
+********************************************************************************
+************************                                                Figure A10
+********************************************************************************
+
+*Despues del anterior solo sigue esto
+
+sum diff_gini [aw=weight]
+*gen std_diff_gini=(diff_gini-r(mean))/r(sd)
+twoway (qfit std_diff_gini p21_gini  if T1==1 [aw=weight], lwidth(thick) lpattern(solid)) ////
+       (qfit  std_diff_gini p21_gini  if T1==0 & T2==0 [aw=weight], lwidth(thick) lpattern(dash)), ////
+graphregion(fcolor(white)) ytitle("Difference") xtitle("Perceived") ////
+legend(order(1 "Treatment 1" 2 "Control")) xlabel(, grid glwidth(medthin) glpattern(dash)) ////
+ylabel(, grid glwidth(medthin) glpattern(dash))
+graph export "$graph\FigA10.emf", replace font("Times New Roman")
+
+
+********************************************************************************
+************************                                                Figure A14
+********************************************************************************
+
+use "$data\Desigualdad_temp.dta", clear
+pca yrs_educ seguro hh_index padres_ind padres_educbaja ageb_graproes [aw=weight]	//localidad//
+predict wealth
+xtile pca_wealth=wealth [aw=weight], nq(20)
+foreach var in p34a p34b p35a p35b p36a p36b p37 p38 p39 p40 {
+replace `var'=`var'*10
+}
+collapse (mean) p20 p14 p15 p16 p17 p21_gini p33_gini p34a p35b p27a p28b p19 p37 p38 p39 p40 wealth (count) nx=p21_gini (rawsum) weight [aw=weight], by(pca_wealth)
+replace pca_wealth=(5*pca_wealth)-2.5
+
+
+replace p20=100*p20/10000
+sum p20 [aw=weight]
+quietly reg p20 pca_wealth [aw=weight], rob
+local coef : di %6.3f _b[pca_wealth]
+local pval : di %6.3f  (2 * ttail(e(df_r), abs(_b[pca_wealth]/_se[pca_wealth])))
+
+twoway (scatter p20 pca_wealth, sort msize(medsmall) msymbol(circle)) ////
+	(lfit p20 pca_wealth [aw=weight], lwidth(medthick) lpattern(solid) lcolor(navy)) ////
+	, ////
+	ytitle("% from own $ to eliminate poverty/inequality") ////
+	ytitle(, size(medium)) ylabel(0(5)25, grid glwidth(medthin) glpattern(dash)) ////
+	xtitle("SES rank") ////
+	xtitle(, size(medium)) xlabel(0(10)100, grid glwidth(medthin) glpattern(dash)) ////
+	text(5 80 "Coefficient `coef' [`pval']", place(c) size(medium)) ////
+	legend(off) graphregion(fcolor(white))
+graph export "$graph\FigA14_Willingtogiveup.emf", replace font("Times New Roman")
+
+
+
+******************************
+****Supplementary Tables
+******************************
+
+********************************************************************************
+************************ Table B.1. 
+********************************************************************************
+use "$data\Desigualdad_temp.dta", clear
+pca yrs_educ seguro hh_index padres_ind padres_educbaja ageb_graproes [aw=weight]	//localidad//
+predict wealth
+xtile pca_wealth=wealth [aw=weight], nq(20)
+replace pca_wealth=(5*pca_wealth)-2.5
+
+putexcel set "$tablas\Tables.xls", sheet("tableA1", replace) modify open
+putexcel B2= "Variable"
+putexcel C2= "N"
+putexcel D2= "Mean"
+putexcel E2= "Std. Dev."
+putexcel F2= "Min"
+putexcel G2= "Max"
+putexcel B3="A. Key control variables"
+local i=4
+foreach var in T1 T2 female edad yrs_educ educ_universidad married work seguro wealth pca_wealth hh_index index_beliefspoverty index_colectivism padres_ind padres_educbaja ////
+ cd_mxcity cd_norte cd_sur cd_centro {
+putexcel B`i'="`var'"
+quietly sum `var' [aw=weight], det
+matrix A=[r(N), r(mean), r(sd), r(min), r(max)]
+putexcel C`i'= matrix(A), nformat(number_d2)
+local i=`i'+1
+}
+display " `i' "
+putexcel B`i'="B. Other variables"
+local i=`i'+1
+foreach var in p12 p13 p14 p15 p16 p17 p18a p18b p18c p18d p18e p18f p19 p20 ////
+p21 p21_gini p22a p22b p22c p22d p22e p22f p23a p23b p23c p23d p24a p24b ////
+p25a p25b p26a p26b p27a p27b p28a p28b p29a p29b {
+putexcel B`i'="`var'"
+quietly sum `var' [aw=weight], det
+matrix A=[r(N), r(mean), r(sd), r(min), r(max)]
+putexcel C`i'= matrix(A), nformat(number_d2)
+local i=`i'+1
+}
+
+putexcel close
+
+ 
 
 ********************************************************************************
 ************************ Table B.2. 
@@ -1086,3 +1158,6 @@ outreg2  using "$tablas\TableB.2.xls" [aw=weight], replace sum (log) keep (diff_
 
 
 
+ 
+
+ 
