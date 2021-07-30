@@ -1027,7 +1027,7 @@ coefplot (A_p33_gini, keep(T1) \ A_p34a, keep(T1) \ A_p35b, keep(T1)  \ A_p34b, 
 		(A_p33_gini, keep(std_wealth) \ A_p34a, keep(std_wealth) \ A_p35b, keep(std_wealth)  \ A_p34b, keep(std_wealth) \ A_p36b, keep(std_wealth) \ A_p35a, keep(std_wealth) \ A_p36a, keep(std_wealth) \ A_p37, keep(std_wealth)) || ////
 		, xline(0) aseq swapnames ////
 			coeflabels(A_p33_gini = "Gini" A_p34a = "Q1-Q1" A_p34b = "Q1-Q5" A_p36a = "Q3-Q1" A_p36b = "Q3-Q5" A_p35a = "Q5-Q1" A_p35b="Q5-Q5" A_p37="Taxes") ////
-			graphregion(fcolor(white))  ci(95)  bylabels("Treatment 1: Inequality" "Treatment 2: Social Mobility" "Standardized Wealth")  ////
+			graphregion(fcolor(white))  ci(95)  bylabels("Treatment 1: Inequality" "Treatment 2: Social Mobility" "Standardized SES")  ////
 			xlabel(-0.30(0.10)0.30, grid glwidth(medthin) glpattern(dash)) ylabel(, nogrid)
 graph export "$graph\FigA9_Reg3_Difference.emf", replace font("Times New Roman")
 
